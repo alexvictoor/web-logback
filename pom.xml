@@ -7,7 +7,7 @@
     <version>1.0-SNAPSHOT</version>
     <name>web-logback</name>
     <url>https://github.com/alexvictoor/web-logback</url>
-    <description>Livereload protocol implementation based on Netty</description>
+    <description>Logback appender relying on HTML5 SSE to push logs on browser consoles</description>
 
 
     <scm>
@@ -116,19 +116,6 @@
                     <target>1.7</target>
                 </configuration>
             </plugin>
-
-            <!--<plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <version>2.4</version>
-                <configuration>
-                    <archive>
-                        <manifest>
-                            <mainClass>com.github.alexvictoor.livereload.Main</mainClass>
-                        </manifest>
-                    </archive>
-                </configuration>
-            </plugin>-->
         </plugins>
     </build>
 
