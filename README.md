@@ -33,8 +33,8 @@ Below an XML fragment example that shows how to configure logback on the server 
     <encoder>
       <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern> <!-- Use whatever pattern you want -->
     </encoder>
-    <port>8765</port> <!-- Optionnal, this is the port on which the HTTP SSE server will listen. Default port is 8765 -->
-    <active>true</active> <!-- Optionnal, if false the appender is disabled. Default value is true -->
+    <port>8765</port> <!-- Optional, this is the port on which the HTTP SSE server will listen. Default port is 8765 -->
+    <active>true</active> <!-- Optional, if false the appender is disabled. Default value is true -->
   </appender>
 ...
 </configuration>
