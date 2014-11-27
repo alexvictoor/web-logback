@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/alexvictoor/web-logback.svg?branch=master)](https://travis-ci.org/alexvictoor/web-logback)
+
 web-logback
 ===========
 
