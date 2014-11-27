@@ -7,9 +7,17 @@ It is based on worderful Netty framework to implement a lightweight HTTP SSE ser
 Usage
 ------
 
-Activation requires 2 steps:
+Activation requires 3 steps:
+- configuration of your build to add a dependency to this project 
 - configuration of the appender in the logback.xml configuration file
 - inclusion of a javascript snippet in your HTML code to open a SSE connection
+
+If you use maven, below the xml fragment you should add in the dependencies section of your pom file:
+```xml
+<groupId>com.github.alexvictoor</groupId>
+<artifactId>web-logback</artifactId>
+<version>0.1</version>
+```
 
 Below an XML fragment example that shows how to configure logback on the server side
 ```xml
