@@ -40,13 +40,13 @@ Below an XML fragment example that shows how to configure logback on the server 
 </configuration>
 ```
 
-In the browser side, the easiest way to get rour logs is to include in tour HTML document script "logback.js" delivered by the embedded HTTP SSE server.  
+In the browser side, the easiest way to get the logs is to include in your HTML document logback.js. This script is delivered by the embedded HTTP SSE server at URL path "/logback.js".  
 During developpement, if you are running the appender with default setting you can simply add the following declaration in your HTML code:
 
     <script type="text/javascript" src="http://localhost:8765/logback.js"></script>
   
 
-Discaimer
+Disclaimer
 ---------
 1. For obvious security concerns, **do not activate it in production!**  
 2. Do not try to use this appender to log Netty activity... this might generate an infinite loop
