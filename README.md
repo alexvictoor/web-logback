@@ -45,6 +45,13 @@ During developpement, if you are running the appender with default setting you c
 
     <script type="text/javascript" src="http://localhost:8765/logback.js"></script>
   
+If you want to hit a server that is not "localhost", you can add the following snipset into your HTML code:
+
+    <script>document.write('<script src="http://'
+    + (location.host || 'localhost').split(':')[0]
+    + ':8765/logback.js"></'
+    + 'script>')</script>
+
 
 Disclaimer
 ---------
