@@ -26,6 +26,7 @@ public class ServerSentEventHandler extends SimpleChannelInboundHandler<Object> 
     private final ChannelGroup allChannels;
     private final String jsContent;
     private final String htmlContent;
+    private final String welcomeMessage;
 
     public ServerSentEventHandler(ChannelGroup allChannels, String host, int port) {
         this.allChannels = allChannels;
@@ -36,6 +37,7 @@ public class ServerSentEventHandler extends SimpleChannelInboundHandler<Object> 
                     .replace("HOST", host)
                     .replace("PORT", Integer.toString(port)
                     );
+        this.welcomeMessage = "Connected successfully on LOG stream from " + host + ":" + port;
     }
 
     @Override
@@ -50,6 +52,10 @@ public class ServerSentEventHandler extends SimpleChannelInboundHandler<Object> 
                 response.headers().set(CONNECTION, "keep-alive");
                 response.headers().set(ACCESS_CONTROL_ALLOW_ORIGIN, "*");
                 ctx.write(response);
+                ServerSentEvent event = new ServerSentEvent("INFO", welcomeMessage);
+                ByteBuf buffer = Unpooled.copiedBuffer(event.toString(), Charset.defaultCharset());
+                HttpContent content = new DefaultHttpContent(buffer);
+                ctx.write(content);
                 ctx.flush();
                 allChannels.add(ctx.channel());
             } else if ("/logback.js".equals(request.getUri())) {
