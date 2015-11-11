@@ -2,6 +2,7 @@ package com.github.alexvictoor.weblogback;
 
 
 import ch.qos.logback.classic.LoggerContext;
+import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.OutputStreamAppender;
 import ch.qos.logback.core.status.Status;
 import ch.qos.logback.core.status.StatusListener;
@@ -10,6 +11,7 @@ import org.slf4j.ILoggerFactory;
 import org.slf4j.LoggerFactory;
 import org.slf4j.helpers.SubstituteLoggerFactory;
 
+import java.io.IOException;
 import java.io.OutputStream;
 import java.util.concurrent.Executors;
 
@@ -18,6 +20,7 @@ public class BrowserConsoleAppender<E> extends OutputStreamAppender<E> {
     private int port = 8765;
     private boolean active = true;
     private WebServer webServer;
+    private ChannelOutputStream stream;
 
     public void setActive(boolean active) {
         this.active = active;
@@ -25,6 +28,15 @@ public class BrowserConsoleAppender<E> extends OutputStreamAppender<E> {
 
     public void setPort(int port) {
         this.port = port;
+    }
+
+    @Override
+    protected void writeOut(E event) throws IOException {
+        if (event instanceof ILoggingEvent) {
+            ILoggingEvent loggingEvent = (ILoggingEvent) event;
+            stream.setCurrentLevel(loggingEvent.getLevel());
+        }
+        super.writeOut(event);
     }
 
     @Override
@@ -37,7 +49,7 @@ public class BrowserConsoleAppender<E> extends OutputStreamAppender<E> {
             public void run() {
                 waitForSlf4jInitialization();
                 webServer = new WebServer(port);
-                OutputStream stream = webServer.start();
+                stream = webServer.start();
                 setOutputStream(stream);
                 BrowserConsoleAppender.super.start();
             }

@@ -28,7 +28,7 @@ public class WebServer {
         this.port = port;
     }
 
-    public OutputStream start() {
+    public ChannelOutputStream start() {
         logger.info("Starting server, listening on port {}", port);
         allChannels = new DefaultChannelGroup(GlobalEventExecutor.INSTANCE);
 

@@ -35,40 +35,4 @@ public class ChannelOutputStreamTest {
         assertThat(output).startsWith("data: hello");
     }
 
-    @Test
-    public void should_write_content_to_channel_and_split_lines() throws IOException {
-        // given
-        ChannelOutputStream stream = new ChannelOutputStream(channel);
-        // when
-        String input = "hello\nworld";
-        stream.write(input.getBytes(),0, input.length());
-        // then
-        ArgumentCaptor<HttpContent> captor = ArgumentCaptor.forClass(HttpContent.class);
-        verify(channel, times(2)).write(captor.capture());
-        List<HttpContent> httpContents = captor.getAllValues();
-        String firstLine = new String(httpContents.get(0).content().array());
-        assertThat(firstLine).startsWith("data: hello");
-        String secondLine = new String(httpContents.get(1).content().array());
-        assertThat(secondLine).startsWith("data: world");
-
-    }
-
-    @Test
-    public void should_write_content_to_channel_and_split_lines_with_windows_carriage_return() throws IOException {
-        // given
-        ChannelOutputStream stream = new ChannelOutputStream(channel);
-        // when
-        String input = "hello\r\nworld";
-        stream.write(input.getBytes(),0, input.length());
-        // then
-        ArgumentCaptor<HttpContent> captor = ArgumentCaptor.forClass(HttpContent.class);
-        verify(channel, times(2)).write(captor.capture());
-        List<HttpContent> httpContents = captor.getAllValues();
-        String firstLine = new String(httpContents.get(0).content().array());
-        assertThat(firstLine).startsWith("data: hello");
-        String secondLine = new String(httpContents.get(1).content().array());
-        assertThat(secondLine).startsWith("data: world");
-
-    }
-
 }
