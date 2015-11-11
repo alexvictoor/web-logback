@@ -24,9 +24,18 @@ public class ServerSentEventHandler extends SimpleChannelInboundHandler<Object> 
     public static final Logger logger = LoggerFactory.getLogger(ServerSentEventHandler.class);
 
     private final ChannelGroup allChannels;
+    private final String jsContent;
+    private final String htmlContent;
 
-    public ServerSentEventHandler(ChannelGroup allChannels) {
+    public ServerSentEventHandler(ChannelGroup allChannels, String host, int port) {
         this.allChannels = allChannels;
+        this.jsContent
+                = new FileReader().readFileFromClassPath("/logback.js");
+        this.htmlContent
+                = new FileReader().readFileFromClassPath("/homepage.html")
+                    .replace("HOST", host)
+                    .replace("PORT", Integer.toString(port)
+                    );
     }
 
     @Override
@@ -44,10 +53,15 @@ public class ServerSentEventHandler extends SimpleChannelInboundHandler<Object> 
                 ctx.flush();
                 allChannels.add(ctx.channel());
             } else if ("/logback.js".equals(request.getUri())) {
-                String jsContent = new FileReader().readFileFromClassPath("/logback.js");
                 ByteBuf content = Unpooled.copiedBuffer(jsContent, Charset.defaultCharset());
                 FullHttpResponse response = new DefaultFullHttpResponse(HTTP_1_1, OK, content);
                 response.headers().set(CONTENT_TYPE, "text/javascript");
+                HttpHeaders.setContentLength(response, content.readableBytes());
+                sendHttpResponse(ctx, request, response);
+            } else {
+                ByteBuf content = Unpooled.copiedBuffer(htmlContent, Charset.defaultCharset());
+                FullHttpResponse response = new DefaultFullHttpResponse(HTTP_1_1, OK, content);
+                response.headers().set(CONTENT_TYPE, "text/html");
                 HttpHeaders.setContentLength(response, content.readableBytes());
                 sendHttpResponse(ctx, request, response);
             }

@@ -12,19 +12,19 @@ import io.netty.util.concurrent.GlobalEventExecutor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.OutputStream;
-
 public class WebServer {
 
     public static final Logger logger = LoggerFactory.getLogger(WebServer.class);
 
+    private final String host;
     private final int port;
     private EventLoopGroup bossGroup;
     private EventLoopGroup workerGroup;
     private Channel serverChannel;
     private ChannelGroup allChannels;
 
-    public WebServer(int port) {
+    public WebServer(String host, int port) {
+        this.host = host;
         this.port = port;
     }
 
@@ -38,7 +38,7 @@ public class WebServer {
             ServerBootstrap b = new ServerBootstrap();
             b.group(bossGroup, workerGroup)
                     .channel(NioServerSocketChannel.class)
-                    .childHandler(new ServerInitializer(allChannels));
+                    .childHandler(new ServerInitializer(allChannels, host, port));
 
             serverChannel = b.bind(port).sync().channel();
         } catch (InterruptedException e) {
