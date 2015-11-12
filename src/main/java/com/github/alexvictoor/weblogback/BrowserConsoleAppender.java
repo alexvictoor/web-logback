@@ -15,6 +15,7 @@ public class BrowserConsoleAppender<E> extends OutputStreamAppender<E> {
 
     private String host;
     private int port = 8765;
+    private int buffer = 1;
     private boolean active = true;
     private WebServer webServer;
     private ChannelOutputStream stream;
@@ -29,6 +30,10 @@ public class BrowserConsoleAppender<E> extends OutputStreamAppender<E> {
 
     public void setPort(int port) {
         this.port = port;
+    }
+
+    public void setBuffer(int buffer) {
+        this.buffer = buffer;
     }
 
     @Override
@@ -62,7 +67,7 @@ public class BrowserConsoleAppender<E> extends OutputStreamAppender<E> {
             @Override
             public void run() {
                 waitForSlf4jInitialization();
-                webServer = new WebServer(host, port);
+                webServer = new WebServer(host, port, buffer);
                 stream = webServer.start();
                 setOutputStream(stream);
                 BrowserConsoleAppender.super.start();

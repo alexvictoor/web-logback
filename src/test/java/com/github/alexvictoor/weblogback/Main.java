@@ -26,12 +26,12 @@ public class Main {
         Executors.newSingleThreadScheduledExecutor().scheduleAtFixedRate(new Runnable() {
             @Override
             public void run() {
-                logger.info("----------------------------------------------------");
+                logger.debug("----------------------------------------------------");
                 logger.info("With web-logback you can check out your server logs");
                 logger.info("in the console of your browser.");
                 logger.info("If you are doing web development with a Java backend");
                 logger.info("that might be handy");
-                logger.info("----------------------------------------------------");
+                logger.debug("----------------------------------------------------");
                 logger.warn("bof bof", new Exception("bad"));
             }
         }, 0, 10, TimeUnit.SECONDS);

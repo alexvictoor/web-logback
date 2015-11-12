@@ -14,9 +14,10 @@
         </encoder>
         <port>8765</port>
         <active>true</active>
+        <buffer>10</buffer>
     </appender>
 
-    <root level="info">
+    <root level="debug">
         <appender-ref ref="STDOUT" />
         <appender-ref ref="WEB" />
     </root>

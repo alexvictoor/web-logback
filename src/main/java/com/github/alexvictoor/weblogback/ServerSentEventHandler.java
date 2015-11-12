@@ -23,12 +23,12 @@ public class ServerSentEventHandler extends SimpleChannelInboundHandler<Object> 
 
     public static final Logger logger = LoggerFactory.getLogger(ServerSentEventHandler.class);
 
-    private final ChannelGroup allChannels;
+    private final ChannelRegistry allChannels;
     private final String jsContent;
     private final String htmlContent;
     private final String welcomeMessage;
 
-    public ServerSentEventHandler(ChannelGroup allChannels, String host, int port) {
+    public ServerSentEventHandler(ChannelRegistry allChannels, String host, int port) {
         this.allChannels = allChannels;
         this.jsContent
                 = new FileReader().readFileFromClassPath("/logback.js");
@@ -57,7 +57,7 @@ public class ServerSentEventHandler extends SimpleChannelInboundHandler<Object> 
                 HttpContent content = new DefaultHttpContent(buffer);
                 ctx.write(content);
                 ctx.flush();
-                allChannels.add(ctx.channel());
+                allChannels.addChannel(ctx.channel());
             } else if ("/logback.js".equals(request.getUri())) {
                 ByteBuf content = Unpooled.copiedBuffer(jsContent, Charset.defaultCharset());
                 FullHttpResponse response = new DefaultFullHttpResponse(HTTP_1_1, OK, content);

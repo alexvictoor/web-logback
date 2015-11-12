@@ -10,12 +10,12 @@ import io.netty.handler.codec.http.HttpResponseEncoder;
 
 public class ServerInitializer extends ChannelInitializer<SocketChannel> {
 
-    private final ChannelGroup allChannels;
+    private final ChannelRegistry channelRegistry;
     private final String host;
     private final int port;
 
-    public ServerInitializer(ChannelGroup allChannels, String host, int port) {
-        this.allChannels = allChannels;
+    public ServerInitializer(ChannelRegistry channelRegistry, String host, int port) {
+        this.channelRegistry = channelRegistry;
         this.host = host;
         this.port = port;
     }
@@ -25,6 +25,6 @@ public class ServerInitializer extends ChannelInitializer<SocketChannel> {
         ChannelPipeline p = ch.pipeline();
         p.addLast(new HttpRequestDecoder());
         p.addLast(new HttpResponseEncoder());
-        p.addLast(new ServerSentEventHandler(allChannels, host, port));
+        p.addLast(new ServerSentEventHandler(channelRegistry, host, port));
     }
 }

@@ -1,7 +1,6 @@
 package com.github.alexvictoor.weblogback;
 
 import ch.qos.logback.classic.Level;
-import ch.qos.logback.core.net.ssl.SSL;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.Channel;
@@ -12,18 +11,36 @@ import io.netty.handler.codec.http.HttpContent;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.charset.Charset;
-import java.util.Arrays;
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
-public class ChannelOutputStream extends OutputStream {
+public class ChannelOutputStream extends OutputStream implements ChannelRegistry {
 
-    private final ChannelGroup channel;
+    private final ChannelGroup channels;
+    private final List<ServerSentEvent> buffer;
     private Level currentLevel;
+    private int bufferSize;
 
-    public ChannelOutputStream(ChannelGroup channel) {
-        this.channel = channel;
+    public ChannelOutputStream(ChannelGroup channels, int bufferSize) {
+        this.channels = channels;
+        this.bufferSize = bufferSize;
         this.currentLevel = Level.OFF;
+        this.buffer = new ArrayList<>();
+    }
+
+    @Override
+    public void addChannel(Channel ch) {
+        channels.add(ch);
+        synchronized (buffer) {
+            for (ServerSentEvent event : buffer) {
+                ByteBuf buffer = Unpooled.copiedBuffer(event.toString(), Charset.defaultCharset());
+                HttpContent content = new DefaultHttpContent(buffer);
+                ch.write(content);
+            }
+            ch.flush();
+        }
     }
 
     @Override
@@ -36,15 +53,22 @@ public class ChannelOutputStream extends OutputStream {
         String msg = new String(data, off, len);
         String level = currentLevel.toString();
         ServerSentEvent event = new ServerSentEvent(level, msg);
+        synchronized (buffer) {
+            buffer.add(event);
+            if (buffer.size() > bufferSize) {
+                buffer.remove(0);
+            }
+        }
         ByteBuf buffer = Unpooled.copiedBuffer(event.toString(), Charset.defaultCharset());
         HttpContent content = new DefaultHttpContent(buffer);
-        channel.write(content);
+        channels.write(content);
     }
 
     @Override
     public void flush() throws IOException {
-        channel.flush();
+        channels.flush();
     }
+
 
     public void setCurrentLevel(Level currentLevel) {
         this.currentLevel = currentLevel;

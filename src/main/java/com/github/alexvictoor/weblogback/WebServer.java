@@ -18,19 +18,22 @@ public class WebServer {
 
     private final String host;
     private final int port;
+    private final int replayBufferSize;
     private EventLoopGroup bossGroup;
     private EventLoopGroup workerGroup;
     private Channel serverChannel;
     private ChannelGroup allChannels;
 
-    public WebServer(String host, int port) {
+    public WebServer(String host, int port, int replayBufferSize) {
         this.host = host;
         this.port = port;
+        this.replayBufferSize = replayBufferSize;
     }
 
     public ChannelOutputStream start() {
         logger.info("Starting server, listening on port {}", port);
         allChannels = new DefaultChannelGroup(GlobalEventExecutor.INSTANCE);
+        ChannelOutputStream channelOutputStream = new ChannelOutputStream(allChannels, replayBufferSize);
 
         bossGroup = new NioEventLoopGroup(1);
         workerGroup = new NioEventLoopGroup(1);
@@ -38,17 +41,20 @@ public class WebServer {
             ServerBootstrap b = new ServerBootstrap();
             b.group(bossGroup, workerGroup)
                     .channel(NioServerSocketChannel.class)
-                    .childHandler(new ServerInitializer(allChannels, host, port));
+                    .childHandler(new ServerInitializer(channelOutputStream, host, port));
 
             serverChannel = b.bind(port).sync().channel();
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
 
-        return new ChannelOutputStream(allChannels);
+        return channelOutputStream;
     }
 
     public void stop() {
+        if (serverChannel == null) {
+            return;
+        }
         try {
             serverChannel.close().sync();
             allChannels.close().sync();
