@@ -32,7 +32,7 @@ public class Main {
                 logger.info("If you are doing web development with a Java backend");
                 logger.info("that might be handy");
                 logger.debug("----------------------------------------------------");
-                logger.warn("bof bof", new Exception("bad"));
+                //logger.warn("bof bof", new Exception("bad"));
             }
         }, 0, 10, TimeUnit.SECONDS);
     }
