@@ -21,7 +21,7 @@ If you use maven, below the xml fragment you should add in the dependencies sect
 <dependency>
   <groupId>com.github.alexvictoor</groupId>
   <artifactId>web-logback</artifactId>
-  <version>0.1</version>
+  <version>0.2</version>
 </dependency>
 ```
 
