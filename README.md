@@ -6,7 +6,7 @@ web-logback
 ![screenshot](src/site/screenshot.png)
 
 Logback appender leveraging "HTML5 Server Sent Event" (SSE) to push logs on browser consoles. 
-It is based on worderful Netty framework to implement a lightweight HTTP SSE server.
+It is based on the wonderful Netty framework to implement a lightweight HTTP SSE server.
 
 Usage
 ------
@@ -14,9 +14,9 @@ Usage
 Activation requires 3 steps:
 - configuration of your build to add a dependency to this project 
 - configuration of the appender in the logback.xml configuration file
-- inclusion of a javascript snippet in your HTML code to open a SSE connection
+- inclusion of a javascript snippet in your HTML code to open an SSE connection
 
-If you use maven, below the xml fragment you should add in the dependencies section of your pom file:
+If you use maven, you should add the xml fragment below in the dependencies section of your pom file:
 ```xml
 <dependency>
   <groupId>com.github.alexvictoor</groupId>
@@ -41,7 +41,7 @@ Below an XML fragment example that shows how to configure logback on the server 
 </configuration>
 ```
 
-In the browser side, the easiest way to get the logs is to include in your HTML document logback.js. This script is delivered by the embedded HTTP SSE server at URL path "/logback.js".  
+In the browser side, the easiest way to get the logs is to include logback.js in your HTML document. This script is delivered by the embedded HTTP SSE server at URL path "/logback.js".  
 During developpement, if you are running the appender with default setting you can simply add the following declaration in your HTML code:
 
     <script type="text/javascript" src="http://localhost:8765/logback.js"></script>
